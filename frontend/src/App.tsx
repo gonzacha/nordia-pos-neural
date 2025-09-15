@@ -68,14 +68,33 @@ function App() {
 
 // Componente que decide qué dashboard mostrar
 const SmartDashboard = () => {
-  const isMobile = useMediaQuery('(max-width:768px)');
-  return isMobile ? <MobileDashboard /> : <Dashboard />;
+  const isMobile = useMediaQuery('(max-width:960px)'); // Aumentar breakpoint
+  const [debugMode, setDebugMode] = React.useState(false);
+
+  React.useEffect(() => {
+    // Debug: mostrar información en console
+    console.log(`📱 Mobile Detection: ${isMobile ? 'MOBILE' : 'DESKTOP'}`);
+    console.log(`📐 Screen width: ${window.innerWidth}px`);
+
+    // Permitir forzar modo móvil con URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mobile') === 'true') {
+      setDebugMode(true);
+    }
+  }, [isMobile]);
+
+  // Forzar modo móvil si está en URL o si es realmente móvil
+  const shouldUseMobile = isMobile || debugMode || window.innerWidth <= 960;
+
+  return shouldUseMobile ? <MobileDashboard /> : <Dashboard />;
 };
 
 // Componente que decide qué analytics mostrar
 const SmartAnalytics = () => {
-  const isMobile = useMediaQuery('(max-width:768px)');
-  return isMobile ? <MobileAnalytics /> : <AnalyticsDashboard />;
+  const isMobile = useMediaQuery('(max-width:960px)');
+  const shouldUseMobile = isMobile || window.innerWidth <= 960;
+
+  return shouldUseMobile ? <MobileAnalytics /> : <AnalyticsDashboard />;
 };
 
 export default App;
