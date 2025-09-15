@@ -15,6 +15,8 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import PosInterface from "./components/POS/PosInterface";
 import ScannerPOS from "./components/POS/ScannerPOS";
 import DiscreteScannerPOS from "./components/POS/DiscreteScannerPOS";
+import AnalyticsDashboard from "./components/Analytics/AnalyticsDashboard";
+import PWAManager from "./components/PWA/PWAManager";
 import NotificationSystem from "./components/UI/NotificationSystem";
 
 // React Query config
@@ -46,6 +48,8 @@ function App() {
                   <Route path="/pos" element={<PosInterface />} />
                   <Route path="/scanner" element={<ScannerPOS />} />
                   <Route path="/discrete" element={<DiscreteScannerPOS />} />
+                  <Route path="/analytics" element={<AnalyticsDashboard />} />
+                  <Route path="/pwa" element={<PWAManager />} />
                 </Routes>
               </Layout>
 
