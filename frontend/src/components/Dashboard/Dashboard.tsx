@@ -1,13 +1,7 @@
 import { Box, Typography, Grid, Card, CardContent, Chip } from '@mui/material';
 import { TrendingUp, ShoppingCart, Psychology } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
-
-interface DayAnalytics {
-  total_revenue: number;
-  total_transactions: number;
-  average_ticket: number;
-  neural_status: string;
-}
+import MockDataService, { DayAnalytics } from '../../services/MockDataService';
 
 export default function Dashboard() {
   const [analytics, setAnalytics] = useState<DayAnalytics>({
@@ -20,13 +14,18 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales/analytics/today`);
-        if (response.ok) {
-          const data = await response.json();
-          setAnalytics(data);
-        }
+        const data = await MockDataService.fetchWithFallback(
+          async () => {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales/analytics/today`);
+            if (!response.ok) throw new Error('API unavailable');
+            return response.json();
+          },
+          MockDataService.getTodayAnalytics()
+        );
+        setAnalytics(data);
       } catch (error) {
-        console.error('Error fetching analytics:', error);
+        console.warn('Using mock analytics data:', error);
+        setAnalytics(MockDataService.getTodayAnalytics());
       }
     };
 
