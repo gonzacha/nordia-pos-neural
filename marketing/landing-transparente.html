@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NORDIA · El Trato Honesto (POS gratis + Inteligencia Colectiva)</title>
+  <meta name="description" content="Pitch interactivo para PyMEs: POS móvil gratuito a cambio de compartir datos ANÓNIMOS. Inteligencia de clase mundial para el barrio. Nordia · Venta Local."/>
+  <style>
+    :root{
+      --bg:#0b0f10;--panel:#10161a;--soft:#0f1417;--ink:#eaf2f1;--muted:#a9c0ba;--brand:#10b981;--accent:#38bdf8;--warn:#f59e0b;--danger:#ef4444;--ok:#22c55e;--border:#1f2a2f;--rose:#fb7185;
+      --radius:18px;--shadow:0 12px 28px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#091113,#0d1417);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1120px;margin:0 auto;padding:24px}
+
+    /* Header */
+    header{position:sticky;top:0;background:rgba(10,14,16,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:50}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:14px;background:conic-gradient(from 0deg,var(--brand),#34d399,var(--accent),#60a5fa,var(--brand));box-shadow:0 0 0 2px #0b1c18, inset 0 0 30px rgba(255,255,255,.08)}
+    .title{margin:0;font-size:22px}
+    .sub{margin:2px 0 0;color:var(--muted)}
+    nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    nav a{background:var(--soft);border:1px solid var(--border);padding:8px 12px;border-radius:999px}
+
+    /* Cards / Sections */
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;gap:16px}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    @media(max-width:900px){.cols-2,.cols-3{grid-template-columns:1fr}}
+
+    /* Buttons */
+    .btn{cursor:pointer;user-select:none;background:linear-gradient(180deg,rgba(16,185,129,.25),rgba(16,185,129,.1));border:1px solid #1a3a31;padding:10px 14px;border-radius:12px;color:#dcfff7;font-weight:600}
+    .btn:hover{filter:brightness(1.05)}
+    .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--ink)}
+    .btn.warn{background:linear-gradient(180deg,rgba(245,158,11,.25),rgba(245,158,11,.1));border-color:#3b2e10}
+
+    /* Switch */
+    .switch{position:relative;width:56px;height:30px;background:#0c1416;border:1px solid var(--border);border-radius:999px;display:inline-block;vertical-align:middle}
+    .knob{position:absolute;top:2px;left:2px;width:26px;height:26px;background:#0e1c1f;border:1px solid #22424a;border-radius:50%;transition:all .2s}
+    .switch.on{background:#0f2a22;border-color:#1d5848}
+    .switch.on .knob{left:28px;background:#0f3a31}
+
+    /* KPI bubbles */
+    .kpis{display:flex;flex-wrap:wrap;gap:12px}
+    .kpi{flex:1 1 160px;background:linear-gradient(180deg,rgba(56,189,248,.08),rgba(56,189,248,.03));border:1px solid #1f2d37;border-radius:14px;padding:14px}
+    .kpi strong{font-size:22px;display:block}
+
+    /* Timeline */
+    .timeline{position:relative;padding-left:18px}
+    .timeline:before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:#1f2a2f}
+    .t-item{position:relative;margin:14px 0 14px 0}
+    .t-item:before{content:"";position:absolute;left:-2px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px rgba(16,185,129,.2)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+    .modal-inner{max-width:780px;width:100%;background:var(--panel);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:20px}
+
+    /* Calculator */
+    .calc{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:900px){.calc{grid-template-columns:1fr}}
+    .input{display:flex;flex-direction:column;gap:6px}
+    .input label{font-size:12px;color:var(--muted)}
+    .input input{background:#0d1417;border:1px solid #23343b;border-radius:10px;padding:10px;color:var(--ink)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#0d1518}
+
+    /* Poster (print) */
+    .poster{background:linear-gradient(180deg,#061012,#0b1417);border:1px solid var(--border);border-radius:20px;padding:22px}
+    .poster h3{margin:0 0 12px}
+    .poster .list{display:grid;gap:10px}
+
+    @media print{
+      header,.no-print{display:none!important}
+      body{background:#fff;color:#000}
+      .card,.poster{box-shadow:none;border-color:#bbb}
+      a{color:#000}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 class="title">NORDIA · El Trato Honesto</h1>
+          <p class="sub">POS móvil gratis → datos ANÓNIMOS compartidos → <strong>inteligencia de clase mundial</strong> para el barrio</p>
+        </div>
+      </div>
+      <nav class="no-print">
+        <a href="#trato">El trato</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#calc">Calculadora</a>
+        <a href="#fases">Fases</a>
+        <a href="#privacidad">Privacidad</a>
+        <a href="#poster">Manifiesto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- HERO / CTA -->
+    <section class="card" id="trato">
+      <div class="grid cols-2" style="align-items:center">
+        <div>
+          <h2 style="margin:0 0 6px">El trato más simple y honesto del mercado</h2>
+          <p class="muted">Vos digitalizás tu caja con <strong>POS móvil gratis</strong>. Nosotros, con tu permiso, usamos <strong>datos ANÓNIMOS</strong> de tus ventas para generar <em>insights colectivos</em>. A cambio, recibís <strong>alertas y recomendaciones</strong> que hoy solo tienen las grandes cadenas.</p>
+          <div class="pill" style="margin-top:10px">🔒 Anonimización por defecto · Opt-out por comercio · Acceso a tus datos 24/7</div>
+          <div class="kpis" style="margin-top:14px">
+            <div class="kpi"><span class="muted">Alta en</span><strong id="kpi-setup">90s</strong><span class="muted">sin tarjeta</span></div>
+            <div class="kpi"><span class="muted">Paper → POS</span><strong>0$</strong><span class="muted">para empezar</span></div>
+            <div class="kpi"><span class="muted">Primera alerta</span><strong>&lt; 24h</strong><span class="muted">tendencias reales</span></div>
+          </div>
+          <div style="margin-top:14px" class="no-print">
+            <button class="btn" onclick="openModal('join')">Quiero ser de los primeros 50</button>
+            <button class="btn secondary" onclick="openModal('demo')">Ver demo de alertas</button>
+          </div>
+        </div>
+        <div>
+          <div class="poster">
+            <h3>⚖️ El Trato Nordia</h3>
+            <div class="list">
+              <div>✅ <strong>Vos ganás</strong>: POS móvil, cierre de caja, catálogo, alertas de demanda, sin costo inicial.</div>
+              <div>🤝 <strong>Nos autorizás</strong> a usar datos <u>anónimos</u> para crear inteligencia de barrio (benchmarks, estacionalidad, tendencias).</div>
+              <div>🎯 <strong>Todos ganan</strong>: mejores reposiciones, menos quiebre de stock, más ventas repetidas.</div>
+            </div>
+          </div>
+          <p class="muted" style="margin:8px 0 0">Imprimible: Archivo → Imprimir para usar como flyer en charlas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS TOGGLE -->
+    <section class="card" id="beneficios">
+      <div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap">
+        <h2 style="margin:0">Beneficios inmediatos</h2>
+        <div style="display:flex;align-items:center;gap:8px" class="no-print">
+          <span class="muted">Ver como</span>
+          <div id="viewSwitch" class="switch" role="switch" aria-checked="false" tabindex="0" onclick="toggleView()" onkeydown="if(event.key==='Enter')toggleView()"><div class="knob"></div></div>
+          <span id="viewLabel">Comercio</span>
+        </div>
+      </div>
+      <div class="grid cols-3" style="margin-top:12px" id="benefitGrid"></div>
+    </section>
+
+    <!-- CALCULADORA -->
+    <section class="card" id="calc">
+      <h2>Calculá tu impacto en minutos</h2>
+      <p class="muted">Un cálculo simple con tus números reales. 
+        <span class="pill">Los costos de WhatsApp/API los puede asumir el cliente → $0 para vos</span>
+      </p>
+      <div class="calc">
+        <div>
+          <div class="input"><label>Pedidos diarios</label><input id="inPedidos" type="number" value="30" min="0" oninput="recalc()"></div>
+          <div class="input"><label>Minutos perdidos por pedido (coordinar/llamadas)</label><input id="inMin" type="number" value="3" min="0" oninput="recalc()"></div>
+          <div class="input"><label>Horas de personal por mes (costo $/hora)</label><input id="inHora" type="number" value="2500" min="0" oninput="recalc()"></div>
+        </div>
+        <div>
+          <div class="card" style="background:#0d1417;border-color:#23343b">
+            <h3 style="margin-top:0">Resultado estimado</h3>
+            <p class="muted">Basado en reducción de llamadas y coordinación con alertas automáticas “salió del local”.</p>
+            <ul id="calcOut" style="margin:0 0 0 18px; padding:0; line-height:1.7"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FASES / ROADMAP -->
+    <section class="card" id="fases">
+      <h2>Despliegue por etapas (sin fricción)</h2>
+      <div class="timeline">
+        <div class="t-item"><h3 style="margin:0">Fase 1 · Hoy — POS móvil gratis</h3><p class="muted">Alta en 90s · cierre de caja · catálogo simple · exportación a Excel/WhatsApp. <strong>Objetivo</strong>: que abandones el papel sin cambiar tu dinámica.</p></div>
+        <div class="t-item"><h3 style="margin:0">Fase 2 · 3–6 meses — Módulo Cadetes</h3><p class="muted">Notificación automática “salió del local”, link de seguimiento, estimaciones por barrio, rankings de cadetes. Costos de mensajes opcionalmente a cargo del cliente.</p></div>
+        <div class="t-item"><h3 style="margin:0">Fase 3 · 6–12 meses — E‑commerce del barrio</h3><p class="muted">Tienda simple + catálogo por WhatsApp/IG, pagos MercadoPago, pickup/entrega. <strong>Con 50 comercios</strong> en Corrientes → cruzamos a Resistencia.</p></div>
+      </div>
+      <div class="pill" style="margin-top:10px">🛡️ Siempre opt‑in · sin letra chica · podés apagar el compartir datos cuando quieras</div>
+    </section>
+
+    <!-- PRIVACIDAD / TRANSPARENCIA -->
+    <section class="card" id="privacidad">
+      <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1 1 360px">
+          <h2>Transparencia desde el día uno</h2>
+          <p class="muted">Tu información identificable <strong>no sale</strong> de tu comercio. Sólo agregamos datos <em>anónimos</em> (sin nombre, sin CUIT, sin dirección) para crear inteligencia colectiva. Como resultado, recibís <strong>benchmarks del barrio</strong>, alertas de demanda y mejores reposiciones de proveedores.</p>
+          <div class="grid cols-2" style="margin-top:8px">
+            <div class="poster"><h3>Qué compartimos</h3><ul style="margin:0 0 0 18px"><li>Volumen por categoría</li><li>Ticket promedio por franja</li><li>Tendencias semanales</li><li>Demoras promedio en entrega</li></ul></div>
+            <div class="poster"><h3>Qué NO compartimos</h3><ul style="margin:0 0 0 18px"><li>Tu nombre o razón social</li><li>CUIT, domicilio, teléfonos</li><li>Precios individuales</li><li>Pedidos de personas identificables</li></ul></div>
+          </div>
+          <div style="margin-top:12px" class="no-print"><button class="btn" onclick="openModal('privacy')">Ver cómo anonimizamos</button></div>
+        </div>
+        <div style="flex:1 1 320px">
+          <div class="card" style="background:#0e171a;border-color:#21343a">
+            <h3 style="margin:0 0 6px">Caso real · Litoralia</h3>
+            <p class="muted">Kiosco/tabaquería + e‑commerce. 
+              Piloto de stock unificado y avisos.
+              Resultado: menos llamadas, mejor control de caja y base de clientes lista para activación.</p>
+            <div class="pill">📈 Próximo paso: notificación “salió del local”.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANIFIESTO POSTER -->
+    <section class="card" id="poster">
+      <h2>Manifiesto para los 50 fundadores del barrio</h2>
+      <div class="poster">
+        <h3 style="margin-top:0">El trato Nordia (versión mostrador)</h3>
+        <ol style="margin:0 0 0 18px;line-height:1.7">
+          <li><strong>Instalás gratis</strong> el POS móvil y empezás a cobrar ordenado.</li>
+          <li><strong>Activás alertas</strong> de demanda y seguimiento cuando quieras.</li>
+          <li>Si aceptás, compartimos <strong>datos anónimos</strong> para mejorar la red.</li>
+          <li>Vos ganás eficiencia hoy; el barrio gana inteligencia para siempre.</li>
+        </ol>
+        <div class="pill" style="margin-top:10px">🎟️ Cupos limitados: 50 comercios · Corrientes → Resistencia</div>
+        <div style="margin-top:10px" class="no-print"><button class="btn" onclick="openModal('join')">Postular mi comercio</button> <button class="btn secondary" onclick="window.print()">Imprimir manifiesto</button></div>
+      </div>
+    </section>
+
+    <footer class="muted" style="margin:26px 0 60px">Hecho con ❤️ en NEA · Nordia / Venta Local · 2025</footer>
+  </main>
+
+  <!-- MODALS -->
+  <div class="modal" id="modal-privacy" aria-hidden="true" role="dialog">
+    <div class="modal-inner">
+      <h3 style="margin-top:0">Cómo anonimizamos tus datos</h3>
+      <ul style="line-height:1.8;margin:0 0 0 18px">
+        <li><strong>Pseudonimización</strong>: Reemplazamos identificadores (comercio, cliente) por claves aleatorias.</li>
+        <li><strong>Agrupación</strong>: Publicamos sólo agregados (por barrio, franja horaria, categoría) con umbrales mínimos de volumen.</li>
+        <li><strong>Opt‑out granular</strong>: Podés excluir categorías sensibles o apagar el compartir cuando quieras.</li>
+        <li><strong>Acceso</strong>: Siempre podés descargar tus datos crudos, sin pedir permiso.</li>
+      </ul>
+      <div style="margin-top:12px;text-align:right"><button class="btn" onclick="closeModal('privacy')">Cerrar</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-join" aria-hidden="true" role="dialog">
+    <div class="modal-inner">
+      <h3 style="margin-top:0">Sumate como comercio fundador</h3>
+      <p class="muted">Dejanos tus datos y te contactamos por WhatsApp para activar el POS en 90s.</p>
+      <form onsubmit="event.preventDefault(); fakeSubmit()">
+        <div class="grid cols-2">
+          <div class="input"><label>Nombre del comercio</label><input required id="fNombre" placeholder="Ej. Rotisería Don Carlos"/></div>
+          <div class="input"><label>WhatsApp</label><input required id="fWsp" placeholder="Ej. 3794 000000"/></div>
+          <div class="input"><label>Barrio / Ciudad</label><input required id="fBarrio" placeholder="Ej. Libertad · Corrientes"/></div>
+          <div class="input"><label>Rubro</label><input id="fRubro" placeholder="Ej. Pizzería"/></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+          <div class="switch on" id="consent" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+          <span>Autorizo compartir <u>datos anónimos</u> para recibir inteligencia colectiva (podré cambiarlo luego).</span>
+        </div>
+        <div style="margin-top:14px;text-align:right"><button class="btn">Enviar</button> <button class="btn secondary" type="button" onclick="closeModal('join')">Cancelar</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-demo" aria-hidden="true" role="dialog">
+    <div class="modal-inner">
+      <h3 style="margin-top:0">Demo de alertas</h3>
+      <p class="muted">Ejemplos de notificaciones y recomendaciones que vas a recibir:</p>
+      <ul style="margin:0 0 0 18px;line-height:1.8">
+        <li>⏱️ <strong>“Salió del local”</strong> enviado al cliente + link de seguimiento.</li>
+        <li>📦 <strong>Riesgo de quiebre</strong> en bebidas frías hoy 20–22h (ola de calor).</li>
+        <li>🗺️ <strong>Ruta óptima</strong> para 3 entregas en el mismo barrio (ahorro 12 min).</li>
+        <li>💬 <strong>Respuesta rápida</strong> en WhatsApp para “¿dónde está mi pedido?”</li>
+      </ul>
+      <div style="margin-top:12px;text-align:right"><button class="btn" onclick="closeModal('demo')">Cerrar</button></div>
+    </div>
+  </div>
+
+  <script>
+    // ----- BENEFIT CARDS -----
+    const BENEFITS = {
+      comercio:[
+        {ico:'🕒',t:'Menos llamadas',d:'Avisos automáticos reducen consultas y liberan tiempo.'},
+        {ico:'💵',t:'Caja en orden',d:'Cierre diario sin Excel ni papel, en 1 toque.'},
+        {ico:'📈',t:'Alertas de demanda',d:'Saber qué se vende más por franja para ajustar stock.'},
+        {ico:'🚚',t:'Entrega ágil',d:'Link de seguimiento y asignación simple de cadetes.'},
+        {ico:'🤝',t:'Clientes fieles',d:'Base de clientes lista para promos por WhatsApp.'},
+        {ico:'🧠',t:'Consejos del barrio',d:'Benchmarks anónimos: aprendés de comercios como vos.'},
+      ],
+      proveedor:[
+        {ico:'📦',t:'Reposición precisa',d:'Señales tempranas de demanda a nivel barrio.'},
+        {ico:'🧭',t:'Rutas de visita',d:'Priorizar locales según quiebre de stock potencial.'},
+        {ico:'🔍',t:'SKU calientes',d:'Radar de categorías con crecimiento real-time.'},
+        {ico:'🤝',t:'Trade marketing',d:'Activaciones con canje por datos agregados (consentidos).'},
+        {ico:'📊',t:'Reportes barrio',d:'KPIs comparables por zona, franja y estacionalidad.'},
+        {ico:'🛡️',t:'Cumplimiento',d:'Datos anónimos con umbrales mínimos y opt-out.'},
+      ]
+    };
+    let providerView=false;
+    function renderBenefits(){
+      const grid=document.getElementById('benefitGrid');
+      const list=providerView?BENEFITS.proveedor:BENEFITS.comercio;
+      grid.innerHTML=list.map(x=>`<div class="poster" style="border-style:solid"><div class="pill">${x.ico} ${x.t}</div><p class="muted" style="margin:8px 0 0">${x.d}</p></div>`).join('');
+      document.getElementById('viewLabel').textContent = providerView? 'Proveedor' : 'Comercio';
+    }
+    function toggleView(){
+      providerView=!providerView; const sw=document.getElementById('viewSwitch'); sw.classList.toggle('on'); renderBenefits();
+    }
+
+    // ----- CALCULATOR -----
+    function recalc(){
+      const pedidos=+document.getElementById('inPedidos').value||0;
+      const min=+document.getElementById('inMin').value||0;
+      const costoHora=+document.getElementById('inHora').value||0;
+      const horasAhorroMes=(pedidos*min/60)*30*0.5; // asumimos 50% de reducción
+      const ahorroARS=Math.round(horasAhorroMes*costoHora);
+      const llamadasReduccion=Math.round(pedidos*0.4); // 40% menos "¿salió mi pedido?"
+      const out=[
+        `⏳ Ahorro estimado de <strong>${horasAhorroMes.toFixed(1)} h/mes</strong> en coordinación` ,
+        `💸 Equivale a <strong>$ ${ahorroARS.toLocaleString('es-AR')}</strong> por mes en tiempo de personal`,
+        `📞 ~<strong>${llamadasReduccion}</strong> llamadas menos por día`,
+        `🧾 POS móvil: <strong>sin costo</strong> para empezar`
+      ];
+      document.getElementById('calcOut').innerHTML=out.map(x=>`<li>${x}</li>`).join('');
+    }
+
+    // ----- MODALS -----
+    function openModal(kind){
+      document.getElementById(`modal-${kind}`).style.display='flex';
+      document.getElementById(`modal-${kind}`).setAttribute('aria-hidden','false');
+    }
+    function closeModal(kind){
+      document.getElementById(`modal-${kind}`).style.display='none';
+      document.getElementById(`modal-${kind}`).setAttribute('aria-hidden','true');
+    }
+    function fakeSubmit(){
+      closeModal('join'); toast('¡Anotado! Te escribimos por WhatsApp en breve.');
+    }
+
+    // ----- TOAST -----
+    function toast(msg){
+      const t=document.createElement('div');
+      t.textContent=msg; t.role='status';
+      t.style.position='fixed'; t.style.bottom='18px'; t.style.left='50%'; t.style.transform='translateX(-50%)';
+      t.style.background='#0f1b1d'; t.style.border='1px solid #244246'; t.style.padding='10px 14px'; t.style.borderRadius='999px';
+      t.style.boxShadow='0 8px 24px rgba(0,0,0,.35)'; t.style.zIndex='9999';
+      document.body.appendChild(t); setTimeout(()=>t.remove(), 1800);
+    }
+
+    // init
+    renderBenefits();
+    recalc();
+  </script>
+</body>
+</html>

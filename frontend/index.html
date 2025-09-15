@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/nordia-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#10b981" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nordia POS" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="POS móvil con inteligencia colectiva para PyMEs. Red neural comercial que conecta comercios locales." />
+    <meta name="keywords" content="pos, pyme, comercio, argentina, corrientes, punto de venta, inteligencia artificial" />
+    <meta name="author" content="Nordia Technologies" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nordia POS - Red Neural Comercial" />
+    <meta property="og:description" content="POS móvil gratuito con inteligencia colectiva para PyMEs" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nordia.app" />
+    <meta property="og:image" content="/nordia-og-image.png" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nordia POS - Red Neural Comercial" />
+    <meta name="twitter:description" content="POS móvil gratuito con inteligencia colectiva para PyMEs" />
+    <meta name="twitter:image" content="/nordia-twitter-image.png" />
+    
+    <title>Nordia POS - Red Neural Comercial</title>
+    
+    <style>
+      /* Loading spinner */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #091113, #0d1417);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 3px solid rgba(16, 185, 129, 0.3);
+        border-top: 3px solid #10b981;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        color: #10b981;
+        margin-top: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Loading screen shown while React loads -->
+      <div class="loading-container">
+        <div>
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Cargando Nordia POS...</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

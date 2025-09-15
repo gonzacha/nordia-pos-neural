@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  nordia-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - nordia-backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    restart: unless-stopped
+
+  nordia-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:nordiapass2025@db:5432/nordia
+      - REDIS_URL=redis://redis:6379
+      - WHATSAPP_TOKEN=${WHATSAPP_TOKEN}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
+      - MERCADOPAGO_ACCESS_TOKEN=${MERCADOPAGO_ACCESS_TOKEN}
+      - SECRET_KEY=${SECRET_KEY:-nordia_secret_key_2025}
+      - ENVIRONMENT=production
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    volumes:
+      - ./backend/logs:/app/logs
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=nordia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=nordiapass2025
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A app.celery worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:nordiapass2025@db:5432/nordia
+      - REDIS_URL=redis://redis:6379
+      - WHATSAPP_TOKEN=${WHATSAPP_TOKEN}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
+      - MERCADOPAGO_ACCESS_TOKEN=${MERCADOPAGO_ACCESS_TOKEN}
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - nordia-frontend
+      - nordia-backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
