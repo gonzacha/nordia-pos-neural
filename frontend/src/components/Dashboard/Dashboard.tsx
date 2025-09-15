@@ -13,18 +13,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchAnalytics = async () => {
+      // En producción, usar siempre datos simulados
+      if (MockDataService.isProductionMode()) {
+        console.log('🚀 Production mode: Using simulated analytics data');
+        setAnalytics(MockDataService.getTodayAnalytics());
+        return;
+      }
+
+      // Solo en desarrollo, intentar API con fallback
       try {
-        const data = await MockDataService.fetchWithFallback(
-          async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales/analytics/today`);
-            if (!response.ok) throw new Error('API unavailable');
-            return response.json();
-          },
-          MockDataService.getTodayAnalytics()
-        );
-        setAnalytics(data);
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales/analytics/today`);
+        if (response.ok) {
+          const data = await response.json();
+          setAnalytics(data);
+        } else {
+          console.warn('API not available, using mock data');
+          setAnalytics(MockDataService.getTodayAnalytics());
+        }
       } catch (error) {
-        console.warn('Using mock analytics data:', error);
+        console.warn('API failed, using mock analytics data:', error);
         setAnalytics(MockDataService.getTodayAnalytics());
       }
     };

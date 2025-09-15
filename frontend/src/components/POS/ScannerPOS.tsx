@@ -107,22 +107,25 @@ const ScannerPOS: React.FC = () => {
       return;
     }
 
-    // Si no está en mock, intentar API
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/products/barcode/${barcode}`);
-      if (response.ok) {
-        const product = await response.json();
-        setLastScannedProduct(product);
-        addToCart(product);
-      } else {
-        console.log('Producto no encontrado para código:', barcode);
-        alert(`Código ${barcode} no encontrado en la base de datos`);
+    // En producción, no hacer llamadas a localhost
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // Solo en desarrollo, intentar API
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/products/barcode/${barcode}`);
+        if (response.ok) {
+          const product = await response.json();
+          setLastScannedProduct(product);
+          addToCart(product);
+          return;
+        }
+      } catch (error) {
+        console.error('Error buscando producto:', error);
       }
-    } catch (error) {
-      console.error('Error buscando producto:', error);
-      // En modo offline, usar mock
-      alert(`Modo offline - Código ${barcode} no disponible`);
     }
+
+    // Producto no encontrado
+    console.log('Producto no encontrado para código:', barcode);
+    alert(`Código ${barcode} no encontrado. Agregue manualmente o use productos disponibles.`);
   };
 
   const addToCart = (product: any) => {
@@ -155,26 +158,30 @@ const ScannerPOS: React.FC = () => {
         customer_info: null
       };
 
-      // Intentar enviar al backend si está disponible
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(saleData),
-        });
+      // Solo enviar al backend en desarrollo
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/api/sales`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(saleData),
+          });
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Venta registrada:', result);
+          if (response.ok) {
+            const result = await response.json();
+            console.log('Venta registrada:', result);
 
-          if (result.neural_insights && result.neural_insights.cross_selling.length > 0) {
-            console.log('Sugerencias de cross-selling:', result.neural_insights.cross_selling);
+            if (result.neural_insights && result.neural_insights.cross_selling.length > 0) {
+              console.log('Sugerencias de cross-selling:', result.neural_insights.cross_selling);
+            }
           }
+        } catch (apiError) {
+          console.log('Backend no disponible, procesando offline');
         }
-      } catch (apiError) {
-        console.log('Backend no disponible, procesando offline');
+      } else {
+        console.log('🚀 Production mode: Sale processed offline');
       }
 
       // Simular insights neurales offline

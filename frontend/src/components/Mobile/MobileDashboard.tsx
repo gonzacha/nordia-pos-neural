@@ -27,6 +27,7 @@ import {
   Refresh,
   MoreVert,
 } from '@mui/icons-material';
+import MockDataService from '../../services/MockDataService';
 
 // Tipos
 interface MetricCardProps {
@@ -235,8 +236,8 @@ const MobileDashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Datos simulados
-  const metrics = [
+  // Datos dinámicos usando MockDataService
+  const [metrics, setMetrics] = useState([
     {
       title: 'Neural Score',
       value: '94%',
@@ -269,7 +270,7 @@ const MobileDashboard: React.FC = () => {
       icon: <Speed />,
       color: '#8b5cf6',
     },
-  ];
+  ]);
 
   const neuralInsights: NeuralInsight[] = [
     {
