@@ -33,7 +33,7 @@ import {
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import PaymentDialog from './PaymentDialog';
 import { useProductManager } from '../../services/ProductService';
-import { Product } from '../../types';
+import { Product, ProductCategory } from '../../types';
 
 interface CartItem extends Product {
   quantity: number;
@@ -138,11 +138,11 @@ const DiscreteScannerPOS: React.FC = () => {
 
   // Productos mock para modo offline
   const mockProducts: Record<string, Product> = {
-    '7790895001234': { id: '1', name: 'Coca Cola 500ml', price: 350, category: 'Bebidas', stock: 48, barcode: '7790895001234' },
-    '7794000123456': { id: '2', name: 'Agua Mineral 500ml', price: 200, category: 'Bebidas', stock: 120, barcode: '7794000123456' },
-    '7790742001234': { id: '3', name: 'Café La Virginia 500g', price: 2800, category: 'Bebidas', stock: 25, barcode: '7790742001234' },
-    '7793241001234': { id: '4', name: 'Fernet Branca 750ml', price: 4500, category: 'Bebidas', stock: 12, barcode: '7793241001234' },
-    '7790070001234': { id: '5', name: 'Cerveza Quilmes 473ml', price: 380, category: 'Bebidas', stock: 36, barcode: '7790070001234' }
+    '7790895001234': { id: '1', name: 'Coca Cola 500ml', price: 350, category: 'bebidas', stock: 48, barcode: '7790895001234' },
+    '7794000123456': { id: '2', name: 'Agua Mineral 500ml', price: 200, category: 'bebidas', stock: 120, barcode: '7794000123456' },
+    '7790742001234': { id: '3', name: 'Café La Virginia 500g', price: 2800, category: 'bebidas', stock: 25, barcode: '7790742001234' },
+    '7793241001234': { id: '4', name: 'Fernet Branca 750ml', price: 4500, category: 'bebidas', stock: 12, barcode: '7793241001234' },
+    '7790070001234': { id: '5', name: 'Cerveza Quilmes 473ml', price: 380, category: 'bebidas', stock: 36, barcode: '7790070001234' }
   };
 
   const handleBarcodeDetected = async (barcode: string) => {
@@ -625,8 +625,10 @@ const DiscreteScannerPOS: React.FC = () => {
               if (productToComplete) {
                 const completedProduct: Product = {
                   ...productToComplete,
-                  ...formData,
+                  name: formData.name,
                   price: parseFloat(formData.price) || 0,
+                  category: formData.category as ProductCategory,
+                  brand: formData.brand,
                   stock: parseInt(formData.stock) || 1,
                   needsCompletion: false,
                   isUnknown: false

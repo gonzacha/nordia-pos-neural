@@ -1,28 +1,4 @@
-// Tipos principales de la aplicación
-export interface Store {
-  id: string;
-  name: string;
-  ownerName: string;
-  phone: string;
-  address: string;
-  latitude?: number;
-  longitude?: number;
-  category: StoreCategory;
-  subscriptionTier: 'free' | 'basic' | 'premium';
-  isActive: boolean;
-  neuralProfile?: NeuralProfile;
-  createdAt: Date;
-}
-
-export type StoreCategory = 
-  | 'almacen' 
-  | 'farmacia' 
-  | 'kiosco' 
-  | 'panaderia' 
-  | 'verduleria' 
-  | 'rotiseria' 
-  | 'otros';
-
+// types/index.ts - MEJORADO
 export interface Product {
   id: string;
   storeId?: string;
@@ -33,7 +9,7 @@ export interface Product {
   cost?: number;
   stock: number;
   minStock?: number;
-  category: string;
+  category: ProductCategory;
   brand?: string;
   supplier?: string;
   image?: string;
@@ -48,177 +24,90 @@ export interface Product {
   updatedAt?: Date;
 }
 
-export interface Sale {
-  id: string;
-  storeId: string;
-  totalAmount: number;
-  paymentMethod: PaymentMethod;
-  customerName?: string;
-  customerPhone?: string;
-  deliveryAddress?: string;
-  deliveryStatus: DeliveryStatus;
-  deliveryCost: number;
-  items: SaleItem[];
-  whatsappMessageId?: string;
-  notificationSent: boolean;
-  predictedDeliveryTime?: number;
-  customerSegment?: string;
-  createdAt: Date;
-  deliveredAt?: Date;
-}
+export type ProductCategory = 
+  | 'bebidas' 
+  | 'snacks' 
+  | 'lacteos' 
+  | 'panaderia' 
+  | 'limpieza' 
+  | 'cigarrillos' 
+  | 'almacen'
+  | 'varios'
+  | 'otros';
 
-export interface SaleItem {
-  id: string;
-  saleId: string;
-  productId: string;
+export interface CartItem extends Product {
   quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  product?: Product;
 }
 
-export type PaymentMethod = 
-  | 'cash' 
-  | 'card' 
-  | 'mercadopago' 
-  | 'transfer' 
-  | 'qr';
+export interface SaleData {
+  items: SaleItemData[];
+  total: number;
+  payment_method: PaymentMethod;
+  customer_info?: CustomerInfo | null;
+}
 
-export type DeliveryStatus = 
-  | 'pending' 
-  | 'preparing' 
-  | 'ready' 
-  | 'shipped' 
-  | 'delivered' 
-  | 'cancelled';
+export interface SaleItemData {
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+}
 
-export interface Insight {
-  id: string;
-  storeId: string;
-  type: InsightType;
-  title: string;
+export type PaymentMethod = 'cash' | 'card' | 'transfer' | 'mercadopago' | 'qr';
+
+export interface CustomerInfo {
+  name?: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface NeuralInsights {
+  cross_selling: CrossSellingInsight[];
+  inventory_alerts: InventoryAlert[];
+  peak_hours: boolean;
+  category_trends: Record<string, any>;
+}
+
+export interface CrossSellingInsight {
+  product: string;
+  reason: string;
+  confidence: number;
+}
+
+export interface InventoryAlert {
   message: string;
-  actionable: boolean;
-  priority: InsightPriority;
-  data?: Record<string, any>;
-  readAt?: Date;
-  actedUpon: boolean;
-  createdAt: Date;
+  priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export type InsightType = 
-  | 'price_alert' 
-  | 'stock_prediction' 
-  | 'market_trend' 
-  | 'demand_spike' 
-  | 'competitor_analysis' 
-  | 'cross_sell_opportunity';
-
-export type InsightPriority = 'low' | 'medium' | 'high' | 'critical';
-
-export interface DataConsentSettings {
-  // Datos básicos (requeridos para insights)
-  salesVolume: boolean;
-  timePatterns: boolean;
-  productCategories: boolean;
-  
-  // Datos avanzados (opcionales)
-  priceRanges: boolean;
-  customerSegments: boolean;
-  deliveryPatterns: boolean;
-  
-  // Controles de privacidad (siempre true)
-  optOutAnytime: boolean;
-  dataDownload: boolean;
-  deleteRequest: boolean;
-}
-
-export interface AnonymizedSaleData {
-  anonymousStoreId: string;
-  productCategory: string;
-  priceRange: 'bajo' | 'medio' | 'alto' | 'premium';
-  quantityRange: string;
-  timeSegment: string;
-  geoSegment: string;
-  dayOfWeek: number;
-  isWeekend: boolean;
-}
-
-export interface NeuralProfile {
-  storeType: string;
-  averageTicket: number;
-  peakHours: number[];
-  topCategories: string[];
-  customerSegments: string[];
-  deliveryRadius: number;
-  competitorProximity: number;
-}
-
-export interface NetworkEvent {
+export interface SaleResponse {
   id: string;
-  eventType: string;
-  sourceStoreId?: string;
-  targetStoreId?: string;
-  productId?: string;
-  data: Record<string, any>;
-  processed: boolean;
-  createdAt: Date;
+  total: number;
+  items_count: number;
+  timestamp: Date;
+  neural_insights?: NeuralInsights;
 }
 
-// API Response Types
+// API Response types
 export interface ApiResponse<T> {
   data: T;
   success: boolean;
   message?: string;
+  error?: string;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+// Scanner types
+export interface ScannerConfig {
+  enableSound: boolean;
+  enableVibration: boolean;
+  autoStop: boolean;
+  timeout: number;
 }
 
-// Auth Types
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'owner' | 'employee';
-  storeId: string;
-  permissions: string[];
-}
-
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-
-// Offline Types
-export interface OfflineSale {
-  id: string;
-  items: Array<{
-    productId: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  timestamp: number;
-  customerInfo?: {
-    name: string;
-    phone: string;
-  };
-  synced: boolean;
-}
-
-export interface SyncStatus {
-  lastSync: Date | null;
-  pendingSales: number;
-  pendingProducts: number;
+// Store/App State
+export interface AppState {
   isOnline: boolean;
-  isSyncing: boolean;
+  currentStore?: string;
+  lastSync?: Date;
+  pendingSales: number;
 }
