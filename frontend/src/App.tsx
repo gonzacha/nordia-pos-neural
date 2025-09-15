@@ -10,14 +10,17 @@ import { AppProvider } from "./context/AppContext";
 import nordiaTheme from "./theme/nordiaTheme";
 
 // Components
-import Layout from "./components/Layout/Layout";
+import ResponsiveLayout from "./components/Layout/ResponsiveLayout";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PosInterface from "./components/POS/PosInterface";
 import ScannerPOS from "./components/POS/ScannerPOS";
 import DiscreteScannerPOS from "./components/POS/DiscreteScannerPOS";
 import AnalyticsDashboard from "./components/Analytics/AnalyticsDashboard";
+import MobileAnalytics from "./components/Analytics/MobileAnalytics";
 import PWAManager from "./components/PWA/PWAManager";
 import NotificationSystem from "./components/UI/NotificationSystem";
+import MobileDashboard from "./components/Mobile/MobileDashboard";
+import { useMediaQuery } from "@mui/material";
 
 // React Query config
 const queryClient = new QueryClient({
@@ -42,16 +45,16 @@ function App() {
           <CssBaseline />
           <AppProvider>
             <Router>
-              <Layout>
+              <ResponsiveLayout>
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/" element={<SmartDashboard />} />
                   <Route path="/pos" element={<PosInterface />} />
                   <Route path="/scanner" element={<ScannerPOS />} />
                   <Route path="/discrete" element={<DiscreteScannerPOS />} />
-                  <Route path="/analytics" element={<AnalyticsDashboard />} />
+                  <Route path="/analytics" element={<SmartAnalytics />} />
                   <Route path="/pwa" element={<PWAManager />} />
                 </Routes>
-              </Layout>
+              </ResponsiveLayout>
 
               {/* Sistema de notificaciones global */}
               <NotificationSystem />
@@ -62,5 +65,17 @@ function App() {
     </StyledEngineProvider>
   );
 }
+
+// Componente que decide qué dashboard mostrar
+const SmartDashboard = () => {
+  const isMobile = useMediaQuery('(max-width:768px)');
+  return isMobile ? <MobileDashboard /> : <Dashboard />;
+};
+
+// Componente que decide qué analytics mostrar
+const SmartAnalytics = () => {
+  const isMobile = useMediaQuery('(max-width:768px)');
+  return isMobile ? <MobileAnalytics /> : <AnalyticsDashboard />;
+};
 
 export default App;
